@@ -1,12 +1,12 @@
 (function(){
 
-var Counter = this.Counter = 	new Class({
+var Counter = this.Counter = new Class({
 
 	Implements: [Options, Events],
 
 	options: {
-		interval: 0,
-		speed: 1,
+		interval: 500,
+		speed: 500,
 		unitClass: 'value',
 		letterSpacing: 0,
 		transition: 'quart:in:out',
@@ -165,7 +165,7 @@ var Counter = this.Counter = 	new Class({
 			duration: this.options.speed,
 			fps: 1000,
 			transition: this.options.transition,
-			onComplete: this.iterateComplete.bind(this, [animEls])
+			onComplete: this.iterateComplete.bind(this, animEls)
 		}).start(animObj);
 
 		this.fireEvent('iterateStart', this.value);
@@ -175,6 +175,7 @@ var Counter = this.Counter = 	new Class({
 		var toAdd = [],
 			clean = function(el, i){
 				if (i % 2 === 1) return toAdd.push(el);
+				console.log(el);
 				el.destroy();
 			},
 			insert = function(el, i){

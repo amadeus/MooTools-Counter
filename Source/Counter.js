@@ -5,8 +5,8 @@ var Counter = this.Counter = new Class({
 	Implements: [Options, Events],
 
 	options: {
-		interval: 0,
-		speed: 1,
+		interval: 500,
+		speed: 500,
 		unitClass: 'value',
 		letterSpacing: 0,
 		transition: 'quart:in:out',

@@ -1,6 +1,6 @@
 (function(){
 
-var Counter = this.Counter = 	new Class({
+var Counter = this.Counter = new Class({
 
 	Implements: [Options, Events],
 

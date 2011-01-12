@@ -175,6 +175,7 @@ var Counter = this.Counter = new Class({
 		var toAdd = [],
 			clean = function(el, i){
 				if (i % 2 === 1) return toAdd.push(el);
+				console.log(el);
 				el.destroy();
 			},
 			insert = function(el, i){

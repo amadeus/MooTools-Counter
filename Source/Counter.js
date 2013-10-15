@@ -5,12 +5,12 @@ var Counter = this.Counter = new Class({
 	Implements: [Options, Events],
 
 	options: {
-		interval: 500,
-		speed: 500,
-		unitClass: 'value',
-		letterSpacing: 0,
-		transition: 'quart:in:out',
-		autostart: true
+		interval      : 500,
+		speed         : 500,
+		unitClass     : 'value',
+		letterSpacing : 0,
+		transition    : 'quart   : in : out',
+		autostart     : true
 	},
 
 	// Includes commas - used for repositioning
@@ -22,15 +22,30 @@ var Counter = this.Counter = new Class({
 	animating: false,
 
 	initialize: function(element, options){
+		var alignment, letterSpacing, position;
 		this.element = document.id(element);
-		if (!this.element) return;
 
-		this.options.textAlign = (this.element.getStyle('text-align') === 'auto') ? 'left' : this.element.getStyle('text-align');
-		this.options.letterSpacing = (this.element.getStyle('letter-spacing') === 'normal') ? 0 : this.element.getStyle('letter-spacing');
+		if (!this.element) {
+			return;
+		}
+
+		alignment     = this.element.getStyle('text-align');
+		letterSpacing = this.element.getStyle('letter-spacing');
+		position      = this.element.getStyle('position');
+
+		this.options.textAlign = alignment === 'auto' ? 'left' : alignment;
+		this.options.letterSpacing = letterSpacing === 'normal' ?
+			0 : letterSpacing;
+
 		this.setOptions(options);
 
-		if (this.element.getStyle('position') === 'static') this.element.setStyle('position', 'relative');
-		if (!this.options.autostart) this.running = false;
+		if (position === 'static') {
+			this.element.setStyle('position', 'relative');
+		}
+
+		if (!this.options.autostart) {
+			this.running = false;
+		}
 
 		this.setupElements();
 
@@ -48,14 +63,22 @@ var Counter = this.Counter = new Class({
 					text: str
 				}).inject(this.element);
 
-				if (i === 0 && str === 0)
+				if (i === 0 && str === 0) {
 					el.setStyle('opacity', 0);
+				}
 
-				if (str === ' ') el.set('html', '&nbsp;');
-				else el.set('text', str);
+				if (str === ' ') {
+					el.set('html', '&nbsp;');
+				} else {
+					el.set('text', str);
+				}
 
 				this.elements.push(el);
-				if (str === ',') return;
+
+				if (str === ',') {
+					return;
+				}
+
 				this.values.push(el);
 			};
 
@@ -63,31 +86,46 @@ var Counter = this.Counter = new Class({
 		this.value = Counter.getValue(display);
 
 		display = display.split('');
-		if (addBlank && display.length % 4 === 3) display.splice(0,0,',');
-		if (addBlank) display.splice(0, 0, 0);
+		if (addBlank && display.length % 4 === 3) {
+			display.splice(0,0,',');
+		}
+		if (addBlank) {
+			display.splice(0, 0, 0);
+		}
 		display.each(fn, this);
 
-		this.values = new Elements(this.values);
+		this.values   = new Elements(this.values);
 		this.elements = new Elements(this.elements);
 
 		this.positionElements();
-		if (addBlank) return;
-		if (this.running) this.iterateValues.delay(this.options.interval, this);
+
+		if (addBlank) {
+			return;
+		}
+
+		if (this.running) {
+			this.iterateValues.delay(this.options.interval, this);
+		}
 	},
 
 	positionElements: function(){
-		var pos, els = Array.clone(this.elements);
+		var els = Array.clone(this.elements),
+			pos, center, offset;
+
 		if (this.options.textAlign === 'right') {
 			els.reverse();
 			pos = 0;
-		} else if (this.options.textAlign === 'center') var center = pos = (this.element.getSize().x / 2);
-		else pos = 0;
+		} else if (this.options.textAlign === 'center') {
+			center = pos = (this.element.getSize().x / 2);
+		} else {
+			pos = 0;
+		}
 
 		els.each(function(el, i){
 			el.setStyles({
-				position: 'absolute',
-				display: 'block',
-				top: 0
+				position : 'absolute',
+				display  : 'block',
+				top      : 0
 			});
 
 			if (this.options.textAlign === 'right') {
@@ -102,7 +140,7 @@ var Counter = this.Counter = new Class({
 		this.element.setStyle('height', this.elements[0].getStyle('height'));
 
 		if (this.options.textAlign === 'center') {
-			var offset = (pos - center) / 2;
+			offset = (pos - center) / 2;
 			els.each(function(el){
 				var newLeft = parseInt(el.getStyle('left'), 10) - offset;
 				el.setStyle('left', newLeft);
@@ -121,7 +159,10 @@ var Counter = this.Counter = new Class({
 			fn = function(val, i){
 				if (stop) return;
 
-				if (val == display[i]) return stop = true;
+				if (val == display[i]) {
+					stop = true;
+					return stop;
+				}
 
 				var height = (this.values[this.values.length - 1 - i].getSize().y) / 1.5,
 					left = this.values[this.values.length - 1 - i].getPosition(this.element).x;
@@ -130,11 +171,11 @@ var Counter = this.Counter = new Class({
 					'class': this.options.unitClass,
 					text: val,
 					styles: {
-						position: 'absolute',
-						display: 'block',
-						opacity: 0,
-						top: height,
-						left: left
+						position : 'absolute',
+						display  : 'block',
+						opacity  : 0,
+						top      : height,
+						left     : left
 					}
 				}).inject(this.values[this.values.length - 1 - i], 'after');
 
@@ -162,10 +203,10 @@ var Counter = this.Counter = new Class({
 		value.each(fn, this);
 
 		new Fx.Elements(animEls, {
-			duration: this.options.speed,
-			fps: 1000,
-			transition: this.options.transition,
-			onComplete: this.iterateComplete.bind(this, animEls)
+			fps : 1000,
+			duration   : this.options.speed,
+			transition : this.options.transition,
+			onComplete : this.iterateComplete.bind(this, animEls)
 		}).start(animObj);
 
 		this.fireEvent('iterateStart', this.value);
@@ -174,7 +215,9 @@ var Counter = this.Counter = new Class({
 	iterateComplete: function(animEls){
 		var toAdd = [],
 			clean = function(el, i){
-				if (i % 2 === 1) return toAdd.push(el);
+				if (i % 2 === 1) {
+					return toAdd.push(el);
+				}
 				el.destroy();
 			},
 			insert = function(el, i){
@@ -187,19 +230,29 @@ var Counter = this.Counter = new Class({
 
 		this.fireEvent('iterateFinish', this.value);
 		this.animating = false;
-		if (this.running) this.iterateValues.delay(this.options.interval, this);
+		if (this.running) {
+			this.iterateValues.delay(this.options.interval, this);
+		}
 	},
 
 	start: function(){
-		if (this.running) return;
+		if (this.running) {
+			return;
+		}
+
 		this.running = true;
 		this.fireEvent('start', this.value);
-		if (!this.animating) this.iterateValues();
+
+		if (!this.animating) {
+			this.iterateValues();
+		}
 		return this;
 	},
 
 	stop: function(){
-		if (!this.running) return;
+		if (!this.running) {
+			return;
+		}
 		this.running = false;
 		this.fireEvent('stop', this.value);
 		return this;
